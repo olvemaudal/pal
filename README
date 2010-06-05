@@ -1,0 +1,79 @@
+PAL - a Primitive Authentication Library in C++ for educational purposes
+
+This library is being developed primarily to be used for teaching and
+discussing C++.
+
+It was originally developed as part of my Solid C++ talk at ACCU 2010,
+where the basic idea was to have some well written code doped with
+some "negative" issues that the audience to could comment on:
+
+  http://olvemaudal.wordpress.com/2010/04/15/solid-c-code-by-example/
+
+A similar talk was also presented for Oslo C++ Users Group:
+
+  http://c.meetup.com/56/calendar/13123479/
+  
+*** USE STORY AND ADDITIONAL REQUIREMENT
+
+Here is the main "use story":
+
+As a client, when prompted for ntlm authentication by the server, I
+want a tool/library that can help me to create the initial ntlm
+request (type 1 message) that I can send to the server to receive a
+challenge (type 2 message) that needs to be solved by applying my
+username and password to create an ntlm response that I can send to
+the server. (phew...)
+
+Here are some (imaginary) additional requirements:
+- must be in C or C++, since embeeded
+- it should be possible and convenient to create a <100kb client using
+  the PAL library
+- must use C++ (due to PHB decision)
+- must use nothing but C++ 1999 (due to compiler support, eg tr1 or
+  boost can not be used)
+- initally the library will only be used to communicate HTTP with 
+  a Windows 2003 Server SP2, currently no need to support other servers
+
+*** FILES
+
+Here are the main files:
+
+  pal.hpp / pal.cpp - the main API to the pal library
+  type1_message.[hc]pp - support for ntlm request messages
+  type2_message.[hc]pp - support for ntlm challenge messages
+  type3_message.[hc]pp - support for ntlm response messages
+  Makefile - try 'make all', note OpenSSL is required
+
+here are some supporting files:
+
+  tools.[hc]pp - tools that might be provided by the executing platform
+  ntlm_ssp_flags.hpp - useful constants for working with ssp flags
+  httpget.cpp - a demo client, see for example of how to use the PAL library
+  tests.cpp - some "high-level" unit tests
+  dope.txt - examples of "bad" things you can introduce for educational use
+  notes.txt - a scratch pad used during development
+
+*** ISSUES
+
+The code is currently under construction, there are still things that
+needs attention:
+
+- the current API into PAL sucks big time, needs improvement
+- some of the funtions in tools.[hc]pp needs to be improved to support
+  the actual usage. Here tools.[hc]pp might use OpenSSL, but there is
+  an underlying assumption that in real use the implementation of
+  tools might use platform supported functionality instead.
+- this README file needs some attention, perhaps an explaination of
+  the NTLM authentication protocol would be useful?
+
+*** COPYRIGHT ISSUES
+
+This code was originally developed by Olve Maudal.
+
+No rights reserved. Feel free to copy/derive/modify/use/misuse this
+code for whatever you want.
+
+Derived work and forking of this project is very much encourage. Or
+you may contribute by sending patches. Please help to improve the code
+as far as possible, as long as the focus on educational value is
+maintained.

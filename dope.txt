@@ -1,0 +1,61 @@
+* ntlm_message.hpp
+virtual destructor
+include the required headers (stdint.h)
+comment after #endif
+write proper include guard (PAL_NTLM_MESSAGE_HPP_INCLUDED)
+use syntax highlighting
+
+* type1_message.hpp
+order of public/private
+use explicit single argument constructor
+avoid _prefix of local variables
+repeating virtual 
+!repeating includes
+(const member variable)
+
+* type1_message.cpp
+initialize class properly
+const member variable
+consider size_t instead of int (remember prefixing)
+avoid magic constants(eg, const size_t flags_offset = 12;)
+... but only when it adds value (not needed for message)
+import namespaces does not improve readability
+size_t instead of int (remember prefixing of size_t)
+prefer prefixing over opening the namespace
+
+* type2_message.hpp
+certainly do not import namespaces in header files
+pass by const ref (buffer)
+do not use the throw specifiers (ctor)
+prefer use const methods (query/command separation)
+
+* type2_message.cpp
+include order (what about own/std/project, hubert)
+pass by const ref (buffer) (*)
+prefix size_t with std
+layout of array initializer (not robust)
+avoid superfluous use of () (eg in return or sizeof)
+
+* type3_message.hpp
+prefer forward declarations
+do not write explicit on multi argument constructors (due to explanation)
+star wars (place & in K&R, BS, and unified)
+avoid default arguments
+avoid fragile code layouts / prefer robust code layout
+
+* type3_message.cpp
+alphabetic order of includes
+use anonymous namespaces for const (but also types)
+complete initializer list
+order of variables in initializer list
+(-Wall and -Wextra)
+space after keywords
+do not "throw new"
+use assignment instead of initialization (data_offset)
+use anonymous namespace instead of static for local (pal_internal)
+sizeof(prefix) -> sizeof prefix
+std::endl is implicitly flushing the stream (in ostream)
+beware of side-effects when using iomanips
+camelCase inside debugstring (sspFlags, sessionKey)
+vote for enums
+

@@ -1,0 +1,22 @@
+goal:
+Create a C++ library that can be used for accessing an NTLM protected webpage.
+The main purpose of this project is to be educational.
+
+todo:
+- reconsider the "\nname"... style 
+- replace msgtype with msg_type
+- consider moving security_buffer into separate header file
+- consider using use "at" instead of "i" as loop variable
+- replace pwdhash with password_hash
+- usage of pal.hpp sucks, improve it somehow
+- write a clean posix based democlient
+- make calculate nt response look as good as calculate_lm_response()
+- clean up on reinterpret_cast
+- do proper size calculation of b64str in as_base64_encoded_string()
+- rename NTLM_PWDHASH_LEN with NTLM_PWDHASH_SIZE
+- get rid of #define of constants
+- do not convert challenge into uint64 and back into std::vector<uint8_t>
+- enable command-line options to democlient
+- make democlient read both unprotected stuff (eg public.txt) and protected stuff
+- fix unit test for Test3_message
+- proper error checking in T3 marshalling
