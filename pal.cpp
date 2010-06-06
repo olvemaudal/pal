@@ -27,13 +27,13 @@ std::vector<uint8_t> pal::create_nt_response(
         throw std::invalid_argument("invalid size of password_hash");
 
     unsigned char p21[21];
-    memset(p21, 0, sizeof(p21));
+    memset(p21, 0, sizeof p21);
     memcpy(p21, password_hash.data(), 16);
 
     unsigned char challenge_bytes[8];
     pal::write_little_endian_from_uint64(challenge_bytes, challenge);
 
-    std::vector<uint8_t> cb(challenge_bytes, challenge_bytes+sizeof(challenge_bytes));
+    std::vector<uint8_t> cb(challenge_bytes, challenge_bytes + sizeof challenge_bytes);
     std::vector<uint8_t> p24chunk1 = pal::des_encrypt(std::vector<uint8_t>(p21+0, p21+7), cb);
     std::vector<uint8_t> p24chunk2 = pal::des_encrypt(std::vector<uint8_t>(p21+7, p21+14), cb);
     std::vector<uint8_t> p24chunk3 = pal::des_encrypt(std::vector<uint8_t>(p21+14, p21+21), cb);

@@ -145,17 +145,17 @@ public:
         // connect
         struct sockaddr_in servaddr;
         char addrstr[INET_ADDRSTRLEN];
-        memset(&servaddr, 0, sizeof(servaddr));
+        memset(&servaddr, 0, sizeof servaddr);
         servaddr.sin_family = AF_INET;
         servaddr.sin_port = htons(port_);
 
-        inet_ntop(AF_INET, *(addr->h_addr_list), addrstr, sizeof(addrstr));
+        inet_ntop(AF_INET, *(addr->h_addr_list), addrstr, sizeof addrstr);
         inet_pton(AF_INET, addrstr, &servaddr.sin_addr);
 
         if (verbose_mode)
             std::cout << "Connecting to " << host_ << ":" << port_ << std::endl;
 
-        if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
+        if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof servaddr) < 0) {
             std::stringstream ss;
             ss << "failed to connect: "
                << errno << " " << strerror(errno) << std::endl;
@@ -181,13 +181,13 @@ public:
     
     http_response receive() {
         char linebuf[1024]; // TODO: fix
-        char * start_line = my_fgets(linebuf, sizeof(linebuf), sock_);
+        char * start_line = my_fgets(linebuf, sizeof linebuf, sock_);
         http_response response(start_line);
         
         typedef std::map<std::string,std::string> field_map;
         field_map fields;
         while(1) {
-            std::string header(my_fgets(linebuf, sizeof(linebuf), sock_));
+            std::string header(my_fgets(linebuf, sizeof linebuf, sock_));
             if (header == "")
                 break;
             size_t pos = header.find(':');
