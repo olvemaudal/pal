@@ -62,7 +62,7 @@ public:
         return body_;
     }
     std::string as_string() const {
-        std::stringstream ss;
+        std::ostringstream ss;
         ss << start_line_ << "\r\n";
         for (std::map<std::string,std::string>::const_iterator
                  i = header_fields_.begin(); i != header_fields_.end(); ++i)
@@ -98,7 +98,7 @@ class http_response : public http_message
 {
 public:
     explicit http_response(const std::string & status_line) : http_message(status_line) {
-        std::stringstream ss(status_line);
+        std::istringstream ss(status_line);
         std::string version;
         ss >> version;
         if (version != "HTTP/1.1")
@@ -124,7 +124,7 @@ public:
         // find host
         struct hostent * addr = gethostbyname(host_.c_str());
         if (addr == NULL) {
-            std::stringstream ss;
+            std::ostringstream ss;
             ss << "failed to find host: " << host_
                << " h_errno=" << h_errno
                << " " << hstrerror(h_errno);
@@ -134,7 +134,7 @@ public:
         // open socket
         int sockfd = socket(AF_INET,SOCK_STREAM,0);
         if (sockfd < 0) {
-            std::stringstream ss;
+            std::ostringstream ss;
             ss << "failed to create socket: "
                << "errno=" << errno
                << " " << strerror(errno);
@@ -155,7 +155,7 @@ public:
             std::cerr << "Connecting to " << host_ << ":" << port_ << std::endl;
 
         if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof servaddr) < 0) {
-            std::stringstream ss;
+            std::ostringstream ss;
             ss << "failed to connect: "
                << errno << " " << strerror(errno) << std::endl;
             throw std::runtime_error(ss.str());
@@ -209,7 +209,7 @@ public:
             if (rc == 0)
                 throw std::runtime_error("unexpected end of file");
             if (rc < -1) {
-                std::stringstream ss;
+                std::ostringstream ss;
                 ss << "failed to read content: "
                    << errno << " " << strerror(errno) << std::endl;
                 throw std::runtime_error(ss.str());

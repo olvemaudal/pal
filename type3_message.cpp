@@ -107,7 +107,7 @@ std::vector<uint8_t> pal::type3_message::as_bytes() const
 
 std::string pal::type3_message::debug_print() const
 {
-    std::stringstream stm;
+    std::ostringstream stm;
     stm << "### type3_message:" << '\n'
         << pal::as_hex_dump(as_bytes())
         << "lmResponse = " << pal::as_hex_string(lm_response_)

@@ -45,7 +45,7 @@ std::string pal::as_base64_string(const std::vector<uint8_t> & buf)
 
 std::string pal::as_hex_dump(const std::vector<uint8_t> & buf)
 {
-    std::stringstream stm;
+    std::ostringstream stm;
     std::size_t len = buf.size();
     std::size_t nlines = ((len-1)/16)+1;
     for (std::size_t n=0; n!=nlines; ++n) {
