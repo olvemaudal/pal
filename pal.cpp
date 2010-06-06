@@ -38,9 +38,11 @@ std::vector<uint8_t> pal::create_nt_response(
     std::vector<uint8_t> p24chunk2 = pal::des_encrypt(std::vector<uint8_t>(p21+7, p21+14), cb);
     std::vector<uint8_t> p24chunk3 = pal::des_encrypt(std::vector<uint8_t>(p21+14, p21+21), cb);
     std::vector<uint8_t> r;
+    r.reserve(24);
     r.insert(r.end(), p24chunk1.begin(), p24chunk1.end());
     r.insert(r.end(), p24chunk2.begin(), p24chunk2.end());
     r.insert(r.end(), p24chunk3.begin(), p24chunk3.end());
+    assert( r.size() == 24 );
 
     return r;
 }
@@ -101,9 +103,11 @@ std::vector<uint8_t> pal::calculate_lm_response(
 
     // concatenate the crypted results
     std::vector<uint8_t> response;
+    response.reserve(24);
     response.insert(response.end(), crypted_with_key1.begin(), crypted_with_key1.end());
     response.insert(response.end(), crypted_with_key2.begin(), crypted_with_key2.end());
     response.insert(response.end(), crypted_with_key3.begin(), crypted_with_key3.end());
+    assert( response.size() == 24 );
 
     return response;
 }
