@@ -7,9 +7,13 @@
 #include <errno.h>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <netdb.h>
 #include <sstream>
 #include <stdexcept>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <string>
 #include <unistd.h>
 

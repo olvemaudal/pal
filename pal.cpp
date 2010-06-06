@@ -1,14 +1,15 @@
 #include "pal.hpp"
 #include "pal_internal.hpp"
 
+#include "ntlm_ssp_flags.hpp"
+#include "tools.hpp"
 #include "type1_message.hpp"
 #include "type2_message.hpp"
 #include "type3_message.hpp"
-#include "tools.hpp"
-#include "ntlm_ssp_flags.hpp"
 
 #include <cassert>
 #include <stdexcept>
+#include <string.h>
 
 std::vector<uint8_t> pal::create_password_hash(const std::string & password)
 {
