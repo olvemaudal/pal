@@ -47,17 +47,17 @@ std::string pal::as_base64_string(const std::vector<uint8_t> & buf)
 std::string pal::as_hex_dump(const std::vector<uint8_t> & buf)
 {
     std::stringstream stm;
-    size_t len = buf.size();
-    size_t nlines = ((len-1)/16)+1;
-    for (size_t n=0; n!=nlines; ++n) {
+    std::size_t len = buf.size();
+    std::size_t nlines = ((len-1)/16)+1;
+    for (std::size_t n=0; n!=nlines; ++n) {
         std::string asciidump;
         stm << std::setfill('0') << std::setw(4) << std::setbase(16) << 16*n << ' ';
-        for (size_t i=0; i!=16; ++i) {
+        for (std::size_t i=0; i!=16; ++i) {
             if (i % 4 == 0) {
                 stm << ' ';
                 asciidump += ' ';
             }
-            size_t idx = n*16+i;
+            std::size_t idx = n*16+i;
             if ( idx<len ) {
                 unsigned char ch = buf[idx];
                 stm << std::setw(2) << std::setbase(16) << (int)ch << ' ';
@@ -76,7 +76,7 @@ std::string pal::as_hex_string(const std::vector<uint8_t> & buf)
     static const char * hextable = "0123456789ABCDEF";
     std::vector<char> outbuf;
     outbuf.reserve(buf.size()*2);
-    for (size_t i=0; i<buf.size(); i++) {
+    for (std::size_t i=0; i<buf.size(); i++) {
         outbuf.push_back(hextable[(buf[i]>>4)&0x0f]);
         outbuf.push_back(hextable[buf[i]&0x0f]);
     }
@@ -86,10 +86,10 @@ std::string pal::as_hex_string(const std::vector<uint8_t> & buf)
 std::vector<uint8_t> pal::as_bytes_from_hex_string(
     const std::string & hex_string)
 {
-    size_t len = hex_string.length();
+    std::size_t len = hex_string.length();
     std::vector<uint8_t> bytes(len);
-    size_t at = 0;
-    for (size_t i=0; i<len; i++) {
+    std::size_t at = 0;
+    for (std::size_t i=0; i<len; i++) {
         char nibble = toupper(hex_string[i]);
         int val = isdigit(nibble) ? nibble - '0' : nibble - 'A' + 10;
         if( i%2 == 0 ) 
@@ -177,7 +177,7 @@ std::vector<uint8_t> pal::rc4(
 std::vector<uint8_t> pal::as_unicode(const std::string & str)
 {
     std::vector<uint8_t> wstr;
-    for (size_t i=0; i<str.length(); ++i) {
+    for (std::size_t i=0; i<str.length(); ++i) {
         wstr.push_back(str[i]);
         wstr.push_back(0x00);
     }

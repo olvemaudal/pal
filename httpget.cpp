@@ -190,7 +190,7 @@ public:
             std::string header(my_fgets(linebuf, sizeof linebuf, sock_));
             if (header == "")
                 break;
-            size_t pos = header.find(':');
+            std::size_t pos = header.find(':');
             if (pos == std::string::npos || header.length() < pos+2) {
                 std::cerr << "huh?" << std::endl;
                 continue;
@@ -201,10 +201,10 @@ public:
             response.header_value(name,value);
         }
 
-        size_t content_length = atoi(response.header_value("Content-Length").c_str());
+        std::size_t content_length = atoi(response.header_value("Content-Length").c_str());
 
         std::vector<char> content(content_length);
-        size_t read_bytes = 0;
+        std::size_t read_bytes = 0;
         while (read_bytes < content_length) {
             int rc = read(fileno(sock_), content.data() + read_bytes, content.size() - read_bytes);
             if (rc == 0)
@@ -237,7 +237,7 @@ public:
             throw std::invalid_argument("invalid uri scheme (expected http://)");
         str.erase(0,7);
         
-        size_t pos = str.find(':');
+        std::size_t pos = str.find(':');
         if (pos == str.npos)
             throw std::invalid_argument("failed to find username");
         username_ = str.substr(0,pos);

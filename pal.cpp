@@ -71,7 +71,7 @@ std::vector<uint8_t> pal::calculate_lm_response(
     std::vector<uint8_t> upcase_and_padded_pwd(14,0);
     
     // convert password to uppercase and pad with 0x00
-    for (size_t at = 0; at != password.length() && at < upcase_and_padded_pwd.size(); ++at) 
+    for (std::size_t at = 0; at != password.length() && at < upcase_and_padded_pwd.size(); ++at) 
         upcase_and_padded_pwd[at] = toupper(password[at]);
 
     // split into two 7-byte halves
