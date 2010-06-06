@@ -98,7 +98,7 @@ public:
 class http_response : public http_message
 {
 public:
-    explicit http_response(const std::string status_line) : http_message(status_line) {
+    explicit http_response(const std::string & status_line) : http_message(status_line) {
         std::stringstream ss(status_line);
         std::string version;
         ss >> version;
