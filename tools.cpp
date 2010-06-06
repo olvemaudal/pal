@@ -211,7 +211,7 @@ std::vector<uint8_t> pal::des_encrypt(
     std::vector<uint8_t> output(8);
     DES_key_schedule ks;
     deskey(&ks, key56.data());
-    DES_ecb_encrypt((unsigned char (*)[8])bytes.data(),
-                    (unsigned char (*)[8])output.data(), &ks, DES_ENCRYPT);
+    DES_ecb_encrypt((DES_cblock *)bytes.data(),
+                    (DES_cblock *)output.data(), &ks, DES_ENCRYPT);
     return output;
 }
