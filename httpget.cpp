@@ -70,7 +70,7 @@ public:
     }
 protected:
     http_message() : start_line_(), header_fields_(), body_() {}
-    http_message(const std::string & start_line)
+    explicit http_message(const std::string & start_line)
         : start_line_(start_line), header_fields_(), body_() {}
     virtual ~http_message() {}
     void start_line(const std::string & line) { start_line_ = line; }
@@ -94,7 +94,7 @@ public:
 class http_response : public http_message
 {
 public:
-    http_response(const std::string status_line) : http_message(status_line) {
+    explicit http_response(const std::string status_line) : http_message(status_line) {
         std::stringstream ss(status_line);
         std::string version;
         ss >> version;
@@ -226,7 +226,7 @@ private:
 class http_uri
 {
 public:
-    http_uri(const std::string & uri) {
+    explicit http_uri(const std::string & uri) {
         std::string str(uri);
         
         if (str.find("http://") != 0)
