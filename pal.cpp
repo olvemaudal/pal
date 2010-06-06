@@ -133,9 +133,8 @@ pal::ntlm_message * pal::create_ntlm_response(
         create_encrypted_session_key(password_hash, session_key);
     assert(encrypted_session_key.size() == 16);
     
-    //const pal::type2_message * t2msg = static_cast<const pal::type2_message*>(&ntlm_msg); // buggy?
-    pal::type2_message * t2msg = (pal::type2_message*)(&ntlm_msg); // buggy?
-    const uint64_t challenge = t2msg->challenge();
+    pal::type2_message t2msg(ntlm_msg.as_bytes()); 
+    const uint64_t challenge = t2msg.challenge();
     
     std::vector<uint8_t> lm_response =
         calculate_lm_response(password, challenge);
