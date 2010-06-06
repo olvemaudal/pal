@@ -6,13 +6,14 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace pal {
 
-    ntlm_message * create_ntlm_request();
-    ntlm_message * create_ntlm_challenge(
+    std::auto_ptr<ntlm_message> create_ntlm_request();
+    std::auto_ptr<ntlm_message> create_ntlm_challenge(
         const std::vector<uint8_t> & challenge_as_bytes);
-    ntlm_message * create_ntlm_response(
+    std::auto_ptr<ntlm_message> create_ntlm_response(
         const std::string & username,
         const std::string & password,
         const ntlm_message & challenge);

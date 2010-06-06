@@ -353,7 +353,6 @@ int main(int argc, char * argv[])
     request.header_value("Authorization", "NTLM " + ntlm_request);
     socket.send(request);
     response = socket.receive();
-
     
     // assume a 401, extract the NTLM challenge and solve it
     if (response.status_code() != 401) {

@@ -112,20 +112,19 @@ std::vector<uint8_t> pal::calculate_lm_response(
     return response;
 }
 
-pal::ntlm_message * pal::create_ntlm_request()
+std::auto_ptr<pal::ntlm_message> pal::create_ntlm_request()
 {
     uint32_t ssp_flags = NTLM_SSP_NEGOTIATE_OEM | NTLM_SSP_NEGOTIATE_NTLM;
-    
-    return new type1_message(ssp_flags);
+    return std::auto_ptr<pal::ntlm_message>(new type1_message(ssp_flags));
 }
 
-pal::ntlm_message * pal::create_ntlm_challenge(
+std::auto_ptr<pal::ntlm_message> pal::create_ntlm_challenge(
     const std::vector<uint8_t> & challenge_as_bytes)
 {
-    return new type2_message(challenge_as_bytes);
+    return std::auto_ptr<pal::ntlm_message>(new type2_message(challenge_as_bytes));
 }
     
-pal::ntlm_message * pal::create_ntlm_response(
+std::auto_ptr<pal::ntlm_message> pal::create_ntlm_response(
     const std::string & username,
     const std::string & password,
     const pal::ntlm_message & ntlm_msg)
@@ -148,7 +147,7 @@ pal::ntlm_message * pal::create_ntlm_response(
         create_nt_response(password_hash, challenge);
     assert(nt_response.size() == 24);
 
-    return new type3_message(lm_response, nt_response, username,
-                             NTLM_SSP_NEGOTIATE_NTLM);
+    return std::auto_ptr<pal::ntlm_message>(
+        new type3_message(lm_response, nt_response, username, NTLM_SSP_NEGOTIATE_NTLM));
 }
 

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <memory>
 
 #define FAIL_TEST(x) assert(0 && (x))
 #define ASSERT_TEST(x) assert(x)
