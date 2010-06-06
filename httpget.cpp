@@ -53,7 +53,7 @@ public:
     }
     std::string header_value(const std::string & name) const {
         std::map<std::string,std::string>::const_iterator i = header_fields_.find(name);
-        return i->second;
+        return (i != header_fields_.end()) ? i->second : "";
     }
     void body(const std::string & data) {
         body_ = data;
