@@ -3,7 +3,6 @@
 #include "pal.hpp"
 
 #include <arpa/inet.h>
-#include <cassert>
 #include <errno.h>
 #include <iostream>
 #include <map>

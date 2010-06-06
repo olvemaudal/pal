@@ -1,7 +1,6 @@
 #ifndef PAL_TOOLS_HPP_INCLUDED
 #define PAL_TOOLS_HPP_INCLUDED
 
-#include <iosfwd>
 #include <stdint.h>
 #include <string>
 #include <vector>

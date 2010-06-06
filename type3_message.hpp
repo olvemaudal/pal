@@ -3,7 +3,6 @@
 
 #include "ntlm_message.hpp"
 
-#include <iosfwd>
 #include <string>
 
 namespace pal {

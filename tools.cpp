@@ -1,6 +1,5 @@
 #include "tools.hpp"
 
-#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
