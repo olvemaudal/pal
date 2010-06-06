@@ -153,7 +153,7 @@ public:
         inet_pton(AF_INET, addrstr, &servaddr.sin_addr);
 
         if (verbose_mode)
-            std::cout << "Connecting to " << host_ << ":" << port_ << std::endl;
+            std::cerr << "Connecting to " << host_ << ":" << port_ << std::endl;
 
         if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof servaddr) < 0) {
             std::stringstream ss;
@@ -174,7 +174,7 @@ public:
         std::string r = request.as_string();
         ssize_t n = write(fileno(sock_), r.c_str(), r.length());
         if (verbose_mode)
-            std::cout << "wrote " << n << " bytes to socket" << std::endl;
+            std::cerr << "wrote " << n << " bytes to socket" << std::endl;
         if (n != (ssize_t)r.length()) 
             throw std::runtime_error("failed to write data to socket");
     }
@@ -192,7 +192,7 @@ public:
                 break;
             size_t pos = header.find(':');
             if (pos == std::string::npos || header.length() < pos+2) {
-                std::cout << "huh?" << std::endl;
+                std::cerr << "huh?" << std::endl;
                 continue;
             }
             std::string name = header.substr(0,pos);
@@ -314,7 +314,7 @@ int main(int argc, char * argv[])
         ++argi;
     }
     if (argi+1 != argc) {
-        std::cout << "failed to parse command line" << std::endl;
+        std::cerr << "failed to parse command line" << std::endl;
         return -1;
     }
     
@@ -337,11 +337,11 @@ int main(int argc, char * argv[])
 
     // if it is not 401 + NTLM authentication that is requested then give up
     if (response.status_code() != 401) {
-        std::cout << response.status_line() << std::endl;
+        std::cerr << response.status_line() << std::endl;
         return -1;
     }
     if (response.header_value("WWW-Authenticate") != "NTLM") { // TODO: fix this, might be several
-        std::cout << "unknown authentication requested" << std::endl;
+        std::cerr << "unknown authentication requested" << std::endl;
         return -1;
     }
 
@@ -357,12 +357,12 @@ int main(int argc, char * argv[])
     
     // assume a 401, extract the NTLM challenge and solve it
     if (response.status_code() != 401) {
-        std::cout << response.status_line() << std::endl;
+        std::cerr << response.status_line() << std::endl;
         return -1;
     }
     std::string auth_str = response.header_value("WWW-Authenticate");
     if (auth_str.length() < 10 || auth_str.substr(0,4) != "NTLM") {
-        std::cout << "unexpected authentication challenge: " << auth_str << std::endl;
+        std::cerr << "unexpected authentication challenge: " << auth_str << std::endl;
         return -1;
     }
     std::string ntlm_challenge_str = auth_str.substr(5);
@@ -378,8 +378,8 @@ int main(int argc, char * argv[])
     socket.send(request);
     response = socket.receive();
     if (response.status_code() != 200) {
-        std::cout << response.status_line() << std::endl;
-        std::cout << "Sorry, failed to get data" << std::endl;
+        std::cerr << response.status_line() << std::endl
+                  << "Sorry, failed to get data" << std::endl;
         return -1;
     }
 
