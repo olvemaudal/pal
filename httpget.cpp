@@ -16,291 +16,288 @@
 #include <string>
 #include <unistd.h>
 
-namespace {
-    int verbose_mode = 0;
+static int verbose_mode = 0;
 
-    char * my_fgets(char * s, int n, FILE * f)
-    {
-        const char lf = 0x0a;
-        const char cr = 0x0d;
-        int i = 0;
-        char c = 0;
-        char prev_c = 0;
-        int fd = fileno(f);
+static char * my_fgets(char * s, int n, FILE * f)
+{
+    const char lf = 0x0a;
+    const char cr = 0x0d;
+    int i = 0;
+    char c = 0;
+    char prev_c = 0;
+    int fd = fileno(f);
 
-        while (i<n-1) {
-            int rc = read(fd, &c, 1);
-            if ( rc == 0 ) 
-                continue;
-            if ( rc != 1 )
-                return 0;
-            if ( (prev_c == cr) && (c == lf) ) 
-                break; 
-            if ( c == cr ) {
-                prev_c = c;
-                continue;
-            }
-            prev_c = s[i++] = c;
+    while (i<n-1) {
+        int rc = read(fd, &c, 1);
+        if ( rc == 0 ) 
+            continue;
+        if ( rc != 1 )
+            return 0;
+        if ( (prev_c == cr) && (c == lf) ) 
+            break; 
+        if ( c == cr ) {
+            prev_c = c;
+            continue;
         }
-        s[i++] = '\0';
-        return s;
+        prev_c = s[i++] = c;
     }
+    s[i++] = '\0';
+    return s;
+}
 
-    class http_message
-    {
-    public:
-        void header_value(const std::string & name, const std::string & value) {
-            header_fields_[name] = value;
-        }
-        std::string header_value(const std::string & name) const {
-            std::map<std::string,std::string>::const_iterator i = header_fields_.find(name);
-            return (i != header_fields_.end()) ? i->second : "";
-        }
-        void body(const std::string & data) {
-            body_ = data;
-        }
-        std::string body() const {
-            return body_;
-        }
-        std::string as_string() const {
+class http_message
+{
+public:
+    void header_value(const std::string & name, const std::string & value) {
+        header_fields_[name] = value;
+    }
+    std::string header_value(const std::string & name) const {
+        std::map<std::string,std::string>::const_iterator i = header_fields_.find(name);
+        return (i != header_fields_.end()) ? i->second : "";
+    }
+    void body(const std::string & data) {
+        body_ = data;
+    }
+    std::string body() const {
+        return body_;
+    }
+    std::string as_string() const {
+        std::ostringstream ss;
+        ss << start_line_ << "\r\n";
+        for (std::map<std::string,std::string>::const_iterator
+                 i = header_fields_.begin(); i != header_fields_.end(); ++i)
+            ss << i->first << ": " << i->second << "\r\n";
+        ss << "\r\n";
+        ss << body_;
+        return ss.str();
+    }
+protected:
+    http_message() : start_line_(), header_fields_(), body_() {}
+    explicit http_message(const std::string & start_line)
+        : start_line_(start_line), header_fields_(), body_() {}
+    virtual ~http_message() {}
+    void start_line(const std::string & line) { start_line_ = line; }
+    std::string start_line() const { return start_line_; }
+private:
+    std::string start_line_;
+    std::map<std::string,std::string> header_fields_;
+    std::string body_;
+};
+
+class http_request : public http_message
+{
+public:
+    http_request(const std::string & method, const std::string & uri) {
+        if (method != "GET")
+            throw std::runtime_error("unsupported method");
+        start_line("GET " + uri + " HTTP/1.1");
+    }
+};
+
+class http_response : public http_message
+{
+public:
+    explicit http_response(const std::string & status_line) : http_message(status_line) {
+        std::istringstream ss(status_line);
+        std::string version;
+        ss >> version;
+        if (version != "HTTP/1.1")
+            throw std::runtime_error("unsupported HTTP version");
+        ss >> status_code_;
+    }
+    int status_code() const {
+        return status_code_;
+    }
+    std::string status_line() const {
+        return start_line();
+    }
+private:
+    int status_code_;
+    std::string reason_;
+};
+
+class http_socket
+{
+public:
+    http_socket(const std::string & host, int port) 
+    : host_(host), port_(port), sock_(0) { 
+        // find host
+        struct hostent * addr = gethostbyname(host_.c_str());
+        if (addr == NULL) {
             std::ostringstream ss;
-            ss << start_line_ << "\r\n";
-            for (std::map<std::string,std::string>::const_iterator
-                     i = header_fields_.begin(); i != header_fields_.end(); ++i)
-                ss << i->first << ": " << i->second << "\r\n";
-            ss << "\r\n";
-            ss << body_;
-            return ss.str();
+            ss << "failed to find host: " << host_
+               << " h_errno=" << h_errno
+               << " " << hstrerror(h_errno);
+            throw std::runtime_error(ss.str());
         }
-    protected:
-        http_message() : start_line_(), header_fields_(), body_() {}
-        explicit http_message(const std::string & start_line)
-            : start_line_(start_line), header_fields_(), body_() {}
-        virtual ~http_message() {}
-        void start_line(const std::string & line) { start_line_ = line; }
-        std::string start_line() const { return start_line_; }
-    private:
-        std::string start_line_;
-        std::map<std::string,std::string> header_fields_;
-        std::string body_;
-    };
 
-    class http_request : public http_message
-    {
-    public:
-        http_request(const std::string & method, const std::string & uri) {
-            if (method != "GET")
-                throw std::runtime_error("unsupported method");
-            start_line("GET " + uri + " HTTP/1.1");
+        // open socket
+        int sockfd = socket(AF_INET,SOCK_STREAM,0);
+        if (sockfd < 0) {
+            std::ostringstream ss;
+            ss << "failed to create socket: "
+               << "errno=" << errno
+               << " " << strerror(errno);
+            throw std::runtime_error(ss.str());
         }
-    };
 
-    class http_response : public http_message
-    {
-    public:
-        explicit http_response(const std::string & status_line) : http_message(status_line) {
-            std::istringstream ss(status_line);
-            std::string version;
-            ss >> version;
-            if (version != "HTTP/1.1")
-                throw std::runtime_error("unsupported HTTP version");
-            ss >> status_code_;
-        }
-        int status_code() const {
-            return status_code_;
-        }
-        std::string status_line() const {
-            return start_line();
-        }
-    private:
-        int status_code_;
-        std::string reason_;
-    };
+        // connect
+        struct sockaddr_in servaddr;
+        char addrstr[INET_ADDRSTRLEN];
+        memset(&servaddr, 0, sizeof servaddr);
+        servaddr.sin_family = AF_INET;
+        servaddr.sin_port = htons(port_);
 
-    class http_socket
-    {
-    public:
-        http_socket(const std::string & host, int port) 
-            : host_(host), port_(port), sock_(0) { 
-            // find host
-            struct hostent * addr = gethostbyname(host_.c_str());
-            if (addr == NULL) {
-                std::ostringstream ss;
-                ss << "failed to find host: " << host_
-                   << " h_errno=" << h_errno
-                   << " " << hstrerror(h_errno);
-                throw std::runtime_error(ss.str());
+        inet_ntop(AF_INET, *(addr->h_addr_list), addrstr, sizeof addrstr);
+        inet_pton(AF_INET, addrstr, &servaddr.sin_addr);
+
+        if (verbose_mode)
+            std::cerr << "Connecting to " << host_ << ":" << port_ << std::endl;
+
+        if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof servaddr) < 0) {
+            std::ostringstream ss;
+            ss << "failed to connect: "
+               << errno << " " << strerror(errno) << std::endl;
+            throw std::runtime_error(ss.str());
+        }
+    
+        sock_ = fdopen(sockfd, "wr");
+    }
+    
+    ~http_socket() {
+        fclose(sock_);
+        sock_ = 0;
+    }
+    
+    void send(const http_request & request) {
+        std::string r = request.as_string();
+        ssize_t n = write(fileno(sock_), r.c_str(), r.length());
+        if (verbose_mode)
+            std::cerr << "wrote " << n << " bytes to socket" << std::endl;
+        if (n != (ssize_t)r.length()) 
+            throw std::runtime_error("failed to write data to socket");
+    }
+    
+    http_response receive() {
+        char linebuf[1024]; // TODO: fix
+        char * start_line = my_fgets(linebuf, sizeof linebuf, sock_);
+        http_response response(start_line);
+        
+        typedef std::map<std::string,std::string> field_map;
+        field_map fields;
+        while(1) {
+            std::string header(my_fgets(linebuf, sizeof linebuf, sock_));
+            if (header == "")
+                break;
+            std::size_t pos = header.find(':');
+            if (pos == std::string::npos || header.length() < pos+2) {
+                std::cerr << "huh?" << std::endl;
+                continue;
             }
+            std::string name = header.substr(0,pos);
+            std::string value = header.substr(pos+2);
+            fields[name] = value;
+            response.header_value(name,value);
+        }
 
-            // open socket
-            int sockfd = socket(AF_INET,SOCK_STREAM,0);
-            if (sockfd < 0) {
+        std::size_t content_length = atoi(response.header_value("Content-Length").c_str());
+
+        std::vector<char> content(content_length);
+        std::size_t read_bytes = 0;
+        while (read_bytes < content_length) {
+            int rc = read(fileno(sock_), content.data() + read_bytes, content.size() - read_bytes);
+            if (rc == 0)
+                throw std::runtime_error("unexpected end of file");
+            if (rc < -1) {
                 std::ostringstream ss;
-                ss << "failed to create socket: "
-                   << "errno=" << errno
-                   << " " << strerror(errno);
-                throw std::runtime_error(ss.str());
-            }
-
-            // connect
-            struct sockaddr_in servaddr;
-            char addrstr[INET_ADDRSTRLEN];
-            memset(&servaddr, 0, sizeof servaddr);
-            servaddr.sin_family = AF_INET;
-            servaddr.sin_port = htons(port_);
-
-            inet_ntop(AF_INET, *(addr->h_addr_list), addrstr, sizeof addrstr);
-            inet_pton(AF_INET, addrstr, &servaddr.sin_addr);
-
-            if (verbose_mode)
-                std::cerr << "Connecting to " << host_ << ":" << port_ << std::endl;
-
-            if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof servaddr) < 0) {
-                std::ostringstream ss;
-                ss << "failed to connect: "
+                ss << "failed to read content: "
                    << errno << " " << strerror(errno) << std::endl;
                 throw std::runtime_error(ss.str());
             }
-    
-            sock_ = fdopen(sockfd, "wr");
+            read_bytes += rc;
         }
-    
-        ~http_socket() {
-            fclose(sock_);
-            sock_ = 0;
-        }
-    
-        void send(const http_request & request) {
-            std::string r = request.as_string();
-            ssize_t n = write(fileno(sock_), r.c_str(), r.length());
-            if (verbose_mode)
-                std::cerr << "wrote " << n << " bytes to socket" << std::endl;
-            if (n != (ssize_t)r.length()) 
-                throw std::runtime_error("failed to write data to socket");
-        }
-    
-        http_response receive() {
-            char linebuf[1024]; // TODO: fix
-            char * start_line = my_fgets(linebuf, sizeof linebuf, sock_);
-            http_response response(start_line);
+
+        response.body(std::string(content.begin(), content.end()));
+        return response;
+    }
+private:
+    std::string host_;
+    int port_;
+    FILE * sock_;
+};
+
+class http_uri
+{
+public:
+    explicit http_uri(const std::string & uri) {
+        std::string str(uri);
         
-            typedef std::map<std::string,std::string> field_map;
-            field_map fields;
-            while(1) {
-                std::string header(my_fgets(linebuf, sizeof linebuf, sock_));
-                if (header == "")
-                    break;
-                std::size_t pos = header.find(':');
-                if (pos == std::string::npos || header.length() < pos+2) {
-                    std::cerr << "huh?" << std::endl;
-                    continue;
-                }
-                std::string name = header.substr(0,pos);
-                std::string value = header.substr(pos+2);
-                fields[name] = value;
-                response.header_value(name,value);
-            }
-
-            std::size_t content_length = atoi(response.header_value("Content-Length").c_str());
-
-            std::vector<char> content(content_length);
-            std::size_t read_bytes = 0;
-            while (read_bytes < content_length) {
-                int rc = read(fileno(sock_), content.data() + read_bytes, content.size() - read_bytes);
-                if (rc == 0)
-                    throw std::runtime_error("unexpected end of file");
-                if (rc < -1) {
-                    std::ostringstream ss;
-                    ss << "failed to read content: "
-                       << errno << " " << strerror(errno) << std::endl;
-                    throw std::runtime_error(ss.str());
-                }
-                read_bytes += rc;
-            }
-
-            response.body(std::string(content.begin(), content.end()));
-            return response;
-        }
-    private:
-        std::string host_;
-        int port_;
-        FILE * sock_;
-    };
-
-    class http_uri
-    {
-    public:
-        explicit http_uri(const std::string & uri) {
-            std::string str(uri);
+        if (str.find("http://") != 0)
+            throw std::invalid_argument("invalid uri scheme (expected http://)");
+        str.erase(0,7);
         
-            if (str.find("http://") != 0)
-                throw std::invalid_argument("invalid uri scheme (expected http://)");
-            str.erase(0,7);
+        std::size_t pos = str.find(':');
+        if (pos == str.npos)
+            throw std::invalid_argument("failed to find username");
+        username_ = str.substr(0,pos);
+        str.erase(0,username_.size()+1);
         
-            std::size_t pos = str.find(':');
-            if (pos == str.npos)
-                throw std::invalid_argument("failed to find username");
-            username_ = str.substr(0,pos);
-            str.erase(0,username_.size()+1);
+        pos = str.find('@');
+        if (pos == str.npos)
+            throw std::invalid_argument("failed to find password");
+        password_ = str.substr(0,pos);
+        str.erase(0,password_.size()+1);
         
-            pos = str.find('@');
-            if (pos == str.npos)
-                throw std::invalid_argument("failed to find password");
-            password_ = str.substr(0,pos);
-            str.erase(0,password_.size()+1);
-        
-            pos = str.find(':');
-            if (pos == str.npos)
-                throw std::invalid_argument("failed to find hostname");
-            hostname_ = str.substr(0,pos);
-            str.erase(0,hostname_.size()+1);
+        pos = str.find(':');
+        if (pos == str.npos)
+            throw std::invalid_argument("failed to find hostname");
+        hostname_ = str.substr(0,pos);
+        str.erase(0,hostname_.size()+1);
 
-            pos = str.find('/');
-            if (pos == str.npos)
-                throw std::invalid_argument("failed to find port");
-            std::string portstr = str.substr(0,pos);
-            port_ = atoi(portstr.c_str());
-            str.erase(0,portstr.size());
+        pos = str.find('/');
+        if (pos == str.npos)
+            throw std::invalid_argument("failed to find port");
+        std::string portstr = str.substr(0,pos);
+        port_ = atoi(portstr.c_str());
+        str.erase(0,portstr.size());
 
-            path_ = str;
-        }
-
-        std::string username() const {
-            return username_;
-        }
-
-        std::string password() const {
-            return password_;
-        }
-
-        std::string hostname() const {
-            return hostname_;
-        }
-
-        int port() const {
-            return port_;
-        }
-
-        std::string path() const {
-            return path_;
-        }
-
-    private:
-        std::string username_;
-        std::string password_;
-        std::string hostname_;
-        int port_;
-        std::string path_;
-    };
-
-    void print_usage(std::ostream & out)
-    {
-        out << "examples:\n"
-            << "  httpget http://Administrator:super@192.168.56.101:80/secret.txt\n" 
-            << "  httpget -v http://Administrator:super@192.168.56.101:80/public.txt"
-            << std::endl;
+        path_ = str;
     }
 
+    std::string username() const {
+        return username_;
+    }
+
+    std::string password() const {
+        return password_;
+    }
+
+    std::string hostname() const {
+        return hostname_;
+    }
+
+    int port() const {
+        return port_;
+    }
+
+    std::string path() const {
+        return path_;
+    }
+
+private:
+    std::string username_;
+    std::string password_;
+    std::string hostname_;
+    int port_;
+    std::string path_;
+};
+
+void print_usage(std::ostream & out)
+{
+    out << "examples:\n"
+        << "  httpget http://Administrator:super@192.168.56.101:80/secret.txt\n" 
+        << "  httpget -v http://Administrator:super@192.168.56.101:80/public.txt"
+        << std::endl;
 }
 
 int main(int argc, char * argv[])
