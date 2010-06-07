@@ -1,5 +1,5 @@
-#ifndef PAL_TYPE2_MESSAGE_HPP
-#define PAL_TYPE2_MESSAGE_HPP
+#ifndef PAL_TYPE2_MESSAGE_HPP_INCLUDED
+#define PAL_TYPE2_MESSAGE_HPP_INCLUDED
 
 #include "ntlm_message.hpp"
 

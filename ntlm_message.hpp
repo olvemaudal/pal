@@ -1,5 +1,5 @@
-#ifndef PAL_NTLM_MESSAGE_HPP
-#define PAL_NTLM_MESSAGE_HPP
+#ifndef PAL_NTLM_MESSAGE_HPP_INCLUDED
+#define PAL_NTLM_MESSAGE_HPP_INCLUDED
 
 #include <stdint.h>
 #include <vector>
