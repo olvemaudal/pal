@@ -29,7 +29,7 @@ Here are some (imaginary) additional requirements:
 - it should be possible and convenient to create a <100kb client using
   the PAL library
 - must use C++ (due to PHB decision)
-- must use nothing but C++ 1999 (due to compiler support, eg tr1 or
+- must use nothing but C++ 1998 (due to compiler support, eg tr1 or
   boost can not be used)
 - initally the library will only be used to communicate HTTP with 
   a Windows 2003 Server SP2, currently no need to support other servers
@@ -65,15 +65,17 @@ needs attention:
   tools might use platform supported functionality instead.
 - this README file needs some attention, perhaps an explaination of
   the NTLM authentication protocol would be useful?
+- the use of stdint.h in C++98 code is questionable...
 
 *** COPYRIGHT ISSUES
 
-This code was originally developed by Olve Maudal.
+This code was originally developed by Olve Maudal, but I have had a
+lot of help from a number of people. You know who you are, thanks!
 
 No rights reserved. Feel free to copy/derive/modify/use/misuse this
 code for whatever you want.
 
-Derived work and forking of this project is very much encourage. Or
+Derived work and forking of this project is very much encouraged. Or
 you may contribute by sending patches. Please help to improve the code
 as far as possible, as long as the focus on educational value is
 maintained.
