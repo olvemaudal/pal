@@ -1,5 +1,6 @@
 #include "tools.hpp"
 
+#include <cstddef>
 #include <iomanip>
 #include <iostream>
 #include <sstream>

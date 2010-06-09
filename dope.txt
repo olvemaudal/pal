@@ -6,21 +6,20 @@ write proper include guard (PAL_NTLM_MESSAGE_HPP_INCLUDED)
 use syntax highlighting
 
 * type1_message.hpp
-order of public/private
-use explicit single argument constructor
++ order of public/private
++ use explicit single argument constructor
 avoid _prefix of local variables
 repeating virtual 
-!repeating includes
++ !repeating includes
 (const member variable)
 
 * type1_message.cpp
-initialize class properly
++ initialize class properly
 const member variable
 consider size_t instead of int (remember prefixing)
 avoid magic constants(eg, const size_t flags_offset = 12;)
 ... but only when it adds value (not needed for message)
-import namespaces does not improve readability
-size_t instead of int (remember prefixing of size_t)
++ import namespaces does not improve readability
 prefer prefixing over opening the namespace
 
 * type2_message.hpp

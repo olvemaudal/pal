@@ -2,8 +2,9 @@
 
 #include "tools.hpp"
 
-#include <stdexcept>
+#include <cstddef>
 #include <algorithm>
+#include <stdexcept>
 
 /*
  * See http://davenport.sourceforge.net/ntlm.html

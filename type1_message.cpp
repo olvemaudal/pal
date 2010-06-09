@@ -2,6 +2,8 @@
 
 #include "tools.hpp"
 
+#include <cstddef>
+
 /*
  * See http://davenport.sourceforge.net/ntlm.html
  * 
