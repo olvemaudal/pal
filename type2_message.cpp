@@ -11,7 +11,7 @@
  * 
  * Type 2 Message
  *
- *   0  NTLMSSP Signature                 {'N','T','L','M','S','S','S','\0'}
+ *   0  NTLMSSP Signature                 {'N','T','L','M','S','S','P','\0'}
  *   8  NTLM Message Type                 {0x02,0x00,0x00,0x00}
  *  12  Target Name                       (security buffer)
  *  20  Flags                             uint32 as little endian
