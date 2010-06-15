@@ -118,5 +118,6 @@ std::string pal::type3_message::debug_print() const
         << "\nsession_key = " << pal::as_hex_string(session_key_)
         << std::hex << std::setw(8) << std::setfill('0') 
         << "\nssp_flags = " << ssp_flags_;
+    return stm.str();
 }
 
