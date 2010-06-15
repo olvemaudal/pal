@@ -48,20 +48,25 @@ static char * my_fgets(char * s, int n, FILE * f)
 class http_message
 {
 public:
-    void header_value(const std::string & name, const std::string & value) {
+    void header_value(const std::string & name, const std::string & value)
+    {
         header_fields_[name] = value;
     }
-    std::string header_value(const std::string & name) const {
+    std::string header_value(const std::string & name) const
+    {
         std::map<std::string,std::string>::const_iterator i = header_fields_.find(name);
         return (i != header_fields_.end()) ? i->second : "";
     }
-    void body(const std::string & data) {
+    void body(const std::string & data)
+    {
         body_ = data;
     }
-    std::string body() const {
+    std::string body() const
+    {
         return body_;
     }
-    std::string as_string() const {
+    std::string as_string() const
+    {
         std::ostringstream ss;
         ss << start_line_ << "\r\n";
         for (std::map<std::string,std::string>::const_iterator
@@ -87,7 +92,8 @@ private:
 class http_request : public http_message
 {
 public:
-    http_request(const std::string & method, const std::string & uri) {
+    http_request(const std::string & method, const std::string & uri)
+    {
         if (method != "GET")
             throw std::runtime_error("unsupported method");
         start_line("GET " + uri + " HTTP/1.1");
@@ -97,7 +103,9 @@ public:
 class http_response : public http_message
 {
 public:
-    explicit http_response(const std::string & status_line) : http_message(status_line) {
+    explicit http_response(const std::string & status_line)
+        : http_message(status_line), status_code_(), reason_()
+    {
         std::istringstream ss(status_line);
         std::string version;
         ss >> version;
@@ -105,10 +113,12 @@ public:
             throw std::runtime_error("unsupported HTTP version");
         ss >> status_code_;
     }
-    int status_code() const {
+    int status_code() const
+    {
         return status_code_;
     }
-    std::string status_line() const {
+    std::string status_line() const
+    {
         return start_line();
     }
 private:
