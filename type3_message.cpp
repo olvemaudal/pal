@@ -107,8 +107,8 @@ std::vector<uint8_t> pal::type3_message::as_bytes() const
 
 std::string pal::type3_message::debug_print() const
 {
-    std::ostringstream stm;
-    stm << "### type3_message:" << '\n'
+    std::ostringstream buf;
+    buf << "### type3_message:" << '\n'
         << pal::as_hex_dump(as_bytes())
         << "lm_response = " << pal::as_hex_string(lm_response_)
         << "\nnt_response = " << pal::as_hex_string(nt_response_)
@@ -118,6 +118,6 @@ std::string pal::type3_message::debug_print() const
         << "\nsession_key = " << pal::as_hex_string(session_key_)
         << std::hex << std::setw(8) << std::setfill('0') 
         << "\nssp_flags = " << ssp_flags_;
-    return stm.str();
+    return buf.str();
 }
 
