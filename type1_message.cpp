@@ -19,7 +19,8 @@
 
 pal::type1_message::type1_message(uint32_t ssp_flags)
     : ssp_flags_(ssp_flags)
-{}
+{
+}
 
 std::vector<uint8_t> pal::type1_message::as_bytes() const
 {
