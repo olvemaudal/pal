@@ -231,6 +231,8 @@ public:
         return response;
     }
 private:
+    http_socket(const http_socket &);
+    http_socket & operator=(const http_socket &);
     std::string host_;
     int port_;
     FILE * sock_;
@@ -239,7 +241,9 @@ private:
 class http_uri
 {
 public:
-    explicit http_uri(const std::string & uri) {
+    explicit http_uri(const std::string & uri)
+        : username_(), password_(), hostname_(), port_(), path_()
+    {
         std::string str(uri);
         
         if (str.find("http://") != 0)
