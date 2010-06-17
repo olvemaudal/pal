@@ -2,6 +2,7 @@
 virtual destructor
 write proper include guard (PAL_NTLM_MESSAGE_HPP_INCLUDED)
 include the required headers (stdint.h)
+
 comment after #endif
 use syntax highlighting
 
@@ -9,14 +10,16 @@ use syntax highlighting
 use explicit single argument constructor
 order of public/private
 !repeating includes
-avoid _prefix of local variables
 repeating virtual 
+
+avoid _prefix of local variables
 (const member variable)
 
 * type1_message.cpp
 initialize class properly
 import namespaces does not improve readability
 consider size_t instead of int (remember prefixing)
+
 const member variable
 avoid magic constants(eg, const size_t flags_offset = 12;)
 ... but only when it adds value (not needed for message)
@@ -26,13 +29,15 @@ prefer prefixing over opening the namespace
 certainly do not import namespaces in header files
 pass by const ref (buffer)
 prefer use const methods (query/command separation)
+
 do not use the throw specifiers (ctor)
 
 * type2_message.cpp
-pass by const ref (buffer) (*)
 include order (what about own/std/project, hubert)
 avoid superfluous use of () (eg in return or sizeof)
+avoid magic numbers
 
+(*) pass by const ref (buffer) 
 prefix size_t with std
 layout of array initializer (not robust)
 
@@ -45,22 +50,19 @@ star wars (place & in K&R, BS, and unified)
 avoid fragile code layouts / prefer robust code layout
 
 * type3_message.cpp
-order in initializer list
-complete initializer list
+order in initializer list (-Wall and -Wextra)
+complete initializer list (-Weffc++)
 do not "throw new"
-
-beware of side-effects when using iomanips
+beware of side-effects when using iomanips (return a string instead)
 
 use anonymous namespaces for const (but also types)
 alphabetic order of includes
-(-Wall and -Wextra)
 space after keywords
-
 use assignment instead of initialization (data_offset)
 use anonymous namespace instead of static for local (pal_internal)
 sizeof(prefix) -> sizeof prefix
 std::endl is implicitly flushing the stream (in ostream)
-
 camelCase inside debugstring (sspFlags, sessionKey)
 vote for enums
+
 

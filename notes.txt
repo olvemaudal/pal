@@ -21,6 +21,10 @@ todo:
 - fix unit test for Test3_message
 - proper error checking in T3 marshalling
 
+known issues:
+- the code assumes that sizeof(uint8_t) == sizeof(char), should this be asserted or compensated for?
+- Not sure if std::size_t should be used for indexing small arrays... maybe int is better
+- uint8_t and stdint.h is not really a part of C++98, it came with C99
 
 ISSUES in NDC talk:
  base classes should have virtual destructors
