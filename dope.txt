@@ -10,8 +10,8 @@ use syntax highlighting
 use explicit single argument constructor
 order of public/private
 !repeating includes
-repeating virtual 
 
+repeating virtual 
 avoid _prefix of local variables
 (const member variable)
 
@@ -44,7 +44,7 @@ layout of array initializer (not robust)
 * type3_message.hpp
 prefer forward declarations
 do not write explicit on multi argument constructors (due to explanation)
-avoid default arguments
+avoid default arguments (ssp_flags = 0x202)
 
 star wars (place & in K&R, BS, and unified)
 avoid fragile code layouts / prefer robust code layout

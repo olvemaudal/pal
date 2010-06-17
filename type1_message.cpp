@@ -17,18 +17,20 @@
  * (32) (start of datablock) if required
  */
 
+using namespace std;
+
 pal::type1_message::type1_message(uint32_t ssp_flags)
-    : ssp_flags_(ssp_flags)
 {
+    ssp_flags_ = ssp_flags;
 }
 
-std::vector<uint8_t> pal::type1_message::as_bytes() const
+vector<uint8_t> pal::type1_message::as_bytes() const
 {
     uint8_t message[16] = {
         'N', 'T', 'L', 'M', 'S', 'S', 'P', '\0',
         0x01, 0x00, 0x00, 0x00, 0, 0, 0, 0
     };
-    const std::size_t ssp_flags_offset = 12;
+    const int ssp_flags_offset = 12;
     pal::write_little_endian_from_uint32(&message[ssp_flags_offset], ssp_flags_);
-    return std::vector<uint8_t>(message, message + sizeof message);
+    return vector<uint8_t>(message, message + sizeof message);
 }
