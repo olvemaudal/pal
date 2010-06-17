@@ -20,3 +20,36 @@ todo:
 - make democlient read both unprotected stuff (eg public.txt) and protected stuff
 - fix unit test for Test3_message
 - proper error checking in T3 marshalling
+
+
+ISSUES in NDC talk:
+ base classes should have virtual destructors
+ header files should have header guards
+ make sure you include the proper header files
+ no need to include files included by the base class declaration
+ no need to repeat the virtual specifier when overriding a method
+ single argument constructors should be specified as explicit
+ focus on usage of class; public section first, then private section
+ always focus on readability, you spend more time reading code than writing it
+ importing a namespace in implementation files is usually not a good idea
+ "never" import a namespace in a header file
+ initialize objects properly, use the initialization list
+ prefer std::size_t when working with memory indexing and offsets
+ for non-trivial objects, prefer pass by const over pass by copy
+ query methods should be specified as const
+ order the include files like this; own, project/platform, standard
+ avoid magic numbers, use explaination variables
+ avoid superfluous use of ()
+ prefer forward declarations when you can
+ do not use explicit on multi argument constructors
+ consider explainability, don't do things that needs elaborate explainations
+ avoid default arguments (they are often not used anyway)
+ do not throw pointers to exceptions (eg, not "throw new ...")
+ treat warnings like errors (-Werror) and compile with -Wall and -Wextra 
+ consider using -Weffc++ and -pedantic as well
+ do not mess with borrowed things
+ always consider the sideeffects of what you do
+
+
+
+
