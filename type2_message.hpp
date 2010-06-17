@@ -3,18 +3,16 @@
 
 #include "ntlm_message.hpp"
 
-using namespace std;
-
 namespace pal {
 
     class type2_message : public ntlm_message {
     public:
-        explicit type2_message(vector<uint8_t> buffer);
-        virtual vector<uint8_t> as_bytes() const;
-        uint32_t ssp_flags();
-        uint64_t challenge();
+        explicit type2_message(const std::vector<uint8_t> & buffer);
+        virtual std::vector<uint8_t> as_bytes() const;
+        uint32_t ssp_flags() const;
+        uint64_t challenge() const;
     private:
-        const vector<uint8_t> buffer_;
+        const std::vector<uint8_t> buffer_;
     };
 
 }
