@@ -1,5 +1,13 @@
 PAL - a Primitive Authentication Library in C++ for educational purposes
 
+*** GETTING STARTED
+
+git clone git://github.com/olvemaudal/pal.git
+cd pal
+make  
+
+*** BACKGROUND
+
 This library is being developed primarily to be used for teaching and
 discussing C++.
 
@@ -9,10 +17,14 @@ some "negative" issues that the audience to could comment on:
 
   http://olvemaudal.wordpress.com/2010/04/15/solid-c-code-by-example/
 
-A similar talk was also presented for Oslo C++ Users Group:
+A similar talk was also presented for Oslo C++ Users Group (May 2010):
 
   http://c.meetup.com/56/calendar/13123479/
-  
+
+and at Norwegian Developer Conference 2010 (June 2010):
+
+  http://www.slideshare.net/olvemaudal/solid-c-by-example
+
 *** USE STORY AND ADDITIONAL REQUIREMENT
 
 Here is the main "use story":
@@ -36,7 +48,7 @@ Here are some (imaginary) additional requirements:
 
 *** FILES
 
-Here are the main files:
+Here are the main files (I would like them to be "perfect"): 
 
   pal.hpp / pal.cpp - the main API to the pal library
   type1_message.[hc]pp - support for ntlm request messages
@@ -44,7 +56,7 @@ Here are the main files:
   type3_message.[hc]pp - support for ntlm response messages
   Makefile - try 'make all', note OpenSSL is required
 
-here are some supporting files:
+here are some supporting files (not so important):
 
   tools.[hc]pp - tools that might be provided by the executing platform
   ntlm_ssp_flags.hpp - useful constants for working with ssp flags
@@ -69,11 +81,11 @@ needs attention:
 
 *** COPYRIGHT ISSUES
 
-This code was originally developed by Olve Maudal, but I have had a
-lot of help from a number of people. You know who you are, thanks!
+This code was originally developed by Olve Maudal, but I have had
+lots of help from a number of people. You know who you are, thanks!
 
-No rights reserved. Feel free to copy/derive/modify/use/misuse this
-code for whatever you want.
+Feel free to copy/derive/modify/use/misuse this code for whatever you
+want.
 
 Derived work and forking of this project is very much encouraged. Or
 you may contribute by sending patches. Please help to improve the code
