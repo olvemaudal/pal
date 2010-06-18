@@ -3,10 +3,10 @@
 
 #include "ntlm_message.hpp"
 
+#include <memory>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace pal {
 

@@ -5,8 +5,8 @@
 #include "type2_message.hpp"
 #include "type3_message.hpp"
 
-#include <iostream>
 #include <assert.h>
+#include <iostream>
 #include <memory>
 
 #define FAIL_TEST(x) assert(0 && (x))
