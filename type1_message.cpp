@@ -28,7 +28,7 @@ std::vector<uint8_t> pal::type1_message::as_bytes() const
         'N', 'T', 'L', 'M', 'S', 'S', 'P', '\0',
         0x01, 0x00, 0x00, 0x00, 0, 0, 0, 0
     };
-    const std::size_t ssp_flags_offset = 12;
+    enum { ssp_flags_offset = 12 };
     pal::write_little_endian_from_uint32(&message[ssp_flags_offset], ssp_flags_);
     return std::vector<uint8_t>(message, message + sizeof message);
 }

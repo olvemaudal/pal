@@ -36,20 +36,20 @@
  *   4  length     (uint32 as little endian)
  */
 
-namespace {
-    const std::size_t lm_response_sb_offset = 12;
-    const std::size_t nt_response_sb_offset = 20;
-    const std::size_t domain_sb_offset = 28;
-    const std::size_t user_sb_offset = 36;
-    const std::size_t workstation_sb_offset = 44;
-    const std::size_t session_key_sb_offset = 52;
-    const std::size_t ssp_flags_offset = 60;
-    const std::size_t data_block_offset = 64;
+enum {
+    lm_response_sb_offset = 12,
+    nt_response_sb_offset = 20,
+    domain_sb_offset = 28,
+    user_sb_offset = 36,
+    workstation_sb_offset = 44,
+    session_key_sb_offset = 52,
+    ssp_flags_offset = 60,
+    data_block_offset = 64,
     
-    const std::size_t lm_response_size = 24;
-    const std::size_t nt_response_size = 24;
-    const std::size_t session_key_size = 16;
-}
+    lm_response_size = 24,
+    nt_response_size = 24,
+    session_key_size = 16
+};
 
 pal::type3_message::type3_message(
     const std::vector<uint8_t> & lm_response, 

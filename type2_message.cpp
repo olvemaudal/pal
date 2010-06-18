@@ -32,7 +32,7 @@
 pal::type2_message::type2_message(const std::vector<uint8_t> & buffer)
     : buffer_(buffer) 
 {
-    const std::size_t min_type2_buffer_size = 32;
+    enum { min_type2_buffer_size = 32 };
     if (buffer.size() < min_type2_buffer_size)
         throw std::invalid_argument("not a type2 message, message too short");
     const uint8_t prefix[12] = {
@@ -45,13 +45,13 @@ pal::type2_message::type2_message(const std::vector<uint8_t> & buffer)
 
 uint32_t pal::type2_message::ssp_flags() const
 {
-    const std::size_t ssp_flags_offset = 20;
+    enum { ssp_flags_offset = 20 };
     return pal::read_uint32_from_little_endian(&buffer_[ssp_flags_offset]);
 }
 
 uint64_t pal::type2_message::challenge() const
 {
-    const std::size_t challenge_offset = 24;
+    enum { challenge_offset = 24 };
     return pal::read_uint64_from_little_endian(&buffer_[challenge_offset]);
 }
 
