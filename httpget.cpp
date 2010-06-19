@@ -27,15 +27,15 @@ static char * my_fgets(char * s, int n, FILE * f)
     char prev_c = 0;
     int fd = fileno(f);
 
-    while (i<n-1) {
+    while (i < n-1) {
         int rc = read(fd, &c, 1);
-        if ( rc == 0 ) 
+        if (rc == 0) 
             continue;
-        if ( rc != 1 )
+        if (rc != 1)
             return 0;
-        if ( (prev_c == cr) && (c == lf) ) 
+        if ((prev_c == cr) && (c == lf)) 
             break; 
-        if ( c == cr ) {
+        if (c == cr) {
             prev_c = c;
             continue;
         }
