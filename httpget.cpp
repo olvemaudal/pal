@@ -179,7 +179,7 @@ public:
         sock_ = 0;
     }
     
-    void send(const http_request & request) {
+    void send(const http_request & request) const {
         std::string r = request.as_string();
         ssize_t n = write(fileno(sock_), r.c_str(), r.length());
         if (verbose_mode)
@@ -188,7 +188,7 @@ public:
             throw std::runtime_error("failed to write data to socket");
     }
     
-    http_response receive() {
+    http_response receive() const {
         char linebuf[1024]; // TODO: fix
         char * start_line = my_fgets(linebuf, sizeof linebuf, sock_);
         http_response response(start_line);
@@ -385,7 +385,7 @@ int main(int argc, char * argv[])
     std::vector<uint8_t> response_buf = ntlm_response_msg->as_bytes();
     std::string ntlm_response = pal::as_base64_string(response_buf);
 
-    // challenge solve (hopefully), send the NTLM response and get the data
+    // challenge solved (hopefully), send the NTLM response and get the data
     request.header_value("Authorization", "NTLM " + ntlm_response);
     socket.send(request);
     response = socket.receive();
