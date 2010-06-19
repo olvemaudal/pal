@@ -93,10 +93,10 @@ class http_request : public http_message
 {
 public:
     http_request(const std::string & method, const std::string & uri)
+        : http_message("GET " + uri + " HTTP/1.1")
     {
         if (method != "GET")
             throw std::runtime_error("unsupported method");
-        start_line("GET " + uri + " HTTP/1.1");
     }
 };
 
