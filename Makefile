@@ -4,8 +4,9 @@ SHELL=/bin/sh
 .SUFFIXES: .c .cpp .o
 
 #-D_FORTIFY_SOURCE=2 -D_GLIBCXX_DEBUG_PEDANTIC=1 -D_GLIBCX_DEBUG=1 
-CFLAGS=-std=c++98 -pedantic -Wall -Wextra -Weffc++ -g -MMD 
-#CFLAGS=-std=c++98 -Wall -g -MMD 
+#CFLAGS=-std=c++98 -pedantic -Wall -Wextra -Weffc++ -g -MMD 
+CFLAGS=-std=c++98 -MMD 
+#CFLAGS=-std=c++98 
 LDFLAGS=-g 
 
 date = `date +"%Y%m%d%H%M"`

@@ -1,10 +1,10 @@
-#include "type2_message.hpp"
-
-#include "tools.hpp"
-
 #include <cstddef>
 #include <algorithm>
 #include <stdexcept>
+
+#include "tools.hpp"
+
+#include "type2_message.hpp"
 
 /*
  * See http://davenport.sourceforge.net/ntlm.html
@@ -29,7 +29,8 @@
  *          <terminator> (type=0,len=0)
  */
 
-pal::type2_message::type2_message(const std::vector<uint8_t> & buffer)
+pal::type2_message::type2_message(std::vector<uint8_t> buffer)
+    throw(std::invalid_argument)
     : buffer_(buffer) 
 {
     enum { min_type2_buffer_size = 32 };
@@ -39,17 +40,17 @@ pal::type2_message::type2_message(const std::vector<uint8_t> & buffer)
         'N','T','L','M','S','S','P','\0',
         0x02,0x00,0x00,0x00
     };
-    if (!std::equal(prefix, prefix + sizeof prefix, buffer.begin()))
+    if (!std::equal(prefix, prefix + sizeof(prefix), buffer.begin()))
         throw std::invalid_argument("not a type2 message, invalid prefix");
 }
 
-uint32_t pal::type2_message::ssp_flags() const
+uint32_t pal::type2_message::ssp_flags() 
 {
     enum { ssp_flags_offset = 20 };
     return pal::read_uint32_from_little_endian(&buffer_[ssp_flags_offset]);
 }
 
-uint64_t pal::type2_message::challenge() const
+uint64_t pal::type2_message::challenge() 
 {
     enum { challenge_offset = 24 };
     return pal::read_uint64_from_little_endian(&buffer_[challenge_offset]);
@@ -57,5 +58,5 @@ uint64_t pal::type2_message::challenge() const
 
 std::vector<uint8_t> pal::type2_message::as_bytes() const
 {
-    return buffer_;
+    return (buffer_);
 }

@@ -2,8 +2,6 @@
 
 #include "tools.hpp"
 
-#include <cstddef>
-
 /*
  * See http://davenport.sourceforge.net/ntlm.html
  * 
@@ -17,18 +15,23 @@
  * (32) (start of datablock) if required
  */
 
-pal::type1_message::type1_message(uint32_t ssp_flags)
-    : ssp_flags_(ssp_flags)
-{
-}
+using namespace std;
 
-std::vector<uint8_t> pal::type1_message::as_bytes() const
-{
-    uint8_t message[16] = {
-        'N', 'T', 'L', 'M', 'S', 'S', 'P', '\0',
-        0x01, 0x00, 0x00, 0x00, 0, 0, 0, 0
-    };
-    enum { ssp_flags_offset = 12 };
-    pal::write_little_endian_from_uint32(&message[ssp_flags_offset], ssp_flags_);
-    return std::vector<uint8_t>(message, message + sizeof message);
+namespace pal {
+    
+    type1_message::type1_message(uint32_t ssp_flags)
+    {
+        ssp_flags_ = ssp_flags;
+    }
+    
+    vector<uint8_t> type1_message::as_bytes() const
+    {
+        uint8_t message[16] = {
+            'N', 'T', 'L', 'M', 'S', 'S', 'P', '\0',
+            0x01, 0x00, 0x00, 0x00, 0, 0, 0, 0
+        };
+        write_little_endian_from_uint32(&message[12], ssp_flags_);
+        return vector<uint8_t>(message, message + sizeof message);
+    }
+
 }
