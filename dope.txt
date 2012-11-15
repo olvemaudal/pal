@@ -48,6 +48,51 @@ virtual destructor
 write proper include guard (PAL_NTLM_MESSAGE_HPP_INCLUDED)
 include the required headers (stdint.h)
 
+* type1_message.hpp
+use explicit single argument constructor
+order of public/private
+!repeating includes
+ssp_flags_ should probably be const
+
+* type1_message.cpp
+initialize class properly
+import namespaces does not improve readability (pal & std)
+consider size_t instead of int (remember prefixing)
+avoid magic constants(eg, const size_t flags_offset = 12;)
+const member variable
+... but only when it adds value (not needed for message)
+prefer prefixing over opening the namespace
+
+* type2_message.hpp
+certainly do not import namespaces in header files
+pass by const ref (buffer)
+prefer use const methods (query/command separation)
+do not use the throw specifiers (ctor)
+
+* type2_message.cpp
+include order 
+avoid superfluous use of () (eg in return or sizeof)
+(*) pass by const ref (buffer) 
+
+* type3_message.hpp
+prefer forward declarations
+do not write explicit on multi argument constructors (due to explanation)
+avoid default arguments (ssp_flags = 0x202)
+star wars (place & in K&R, BS, and unified)
+
+* type3_message.cpp
+order in initializer list (-Wall and -Wextra)
+complete initializer list (-Weffc++)
+do not "throw new"
+beware of side-effects when using iomanips (return a string instead)
+
+----
+
+* ntlm_message.hpp
+virtual destructor
+write proper include guard (PAL_NTLM_MESSAGE_HPP_INCLUDED)
+include the required headers (stdint.h)
+
 comment after #endif
 use syntax highlighting
 

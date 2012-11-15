@@ -1,16 +1,17 @@
-#ifndef NTML
-#define NTML
+#ifndef PAL_NTLM_MESSAGE_HPP_INCLUDED
+#define PAL_NTLM_MESSAGE_HPP_INCLUDED
 
+#include <stdint.h>
 #include <vector>
 
 namespace pal {
     
     class ntlm_message {
     public:
-        ~ntlm_message() {}
+        virtual ~ntlm_message() {}
         virtual std::vector<uint8_t> as_bytes() const = 0;
     };
     
 }
 
-#endif // NTLM
+#endif

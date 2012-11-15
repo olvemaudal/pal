@@ -59,14 +59,16 @@ pal::type3_message::type3_message(
     :
     lm_response_(lm_response),
     nt_response_(nt_response),
+    domain_(),
     user_(user),
-    ssp_flags_(ssp_flags),
-    session_key_(session_key_size)
+    workstation_(),
+    session_key_(session_key_size),
+    ssp_flags_(ssp_flags)
 {
     if (lm_response_.size() != lm_response_size)
-        throw new std::invalid_argument("invalid size of lm_response");
+        throw std::invalid_argument("invalid size of lm_response");
     if (nt_response_.size() != nt_response_size)
-        throw new std::invalid_argument("invalid size of nt_response");
+        throw std::invalid_argument("invalid size of nt_response");
 }
 
 namespace {
@@ -103,9 +105,10 @@ std::vector<uint8_t> pal::type3_message::as_bytes() const
     return buffer;
 }
 
-void pal::type3_message::debug_print(std::ostream & out) const
+std::string pal::type3_message::debug_print() const
 {
-    out << "### type3_message:" << '\n'
+    std::ostringstream buf;
+    buf << "### type3_message:" << '\n'
         << pal::as_hex_dump(as_bytes())
         << "lm_response = " << pal::as_hex_string(lm_response_)
         << "\nnt_response = " << pal::as_hex_string(nt_response_)
@@ -115,5 +118,6 @@ void pal::type3_message::debug_print(std::ostream & out) const
         << "\nsession_key = " << pal::as_hex_string(session_key_)
         << std::hex << std::setw(8) << std::setfill('0') 
         << "\nssp_flags = " << ssp_flags_;
+    return buf.str();
 }
 
